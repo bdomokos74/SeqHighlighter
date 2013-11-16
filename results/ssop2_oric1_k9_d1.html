@@ -2,8 +2,8 @@
 
 <html>
 <head>
-    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script src="jquery-1.10.1.min.js"></script>
+    <script src="jquery-migrate-1.2.1.min.js"></script>
     <script>
         window.kvalue = 9
         window.kmers = [[5, ["ATAAAAATT", [96], "AATTTTTAT", [197, 297, 417, 440]], ["TTGAAAATT", [138, 354], "AATTTTCAA", [297, 380, 417]], ["GAAAATTTT", [140, 414], "AAAATTTTC", [295, 378, 415]], ["TAAACATAA", [93, 325], "TTATGTTTA", [103, 196, 439]], ["AAAATTTTT", [141, 415], "AAAAATTTT", [377, 414, 415]]], [4, ["AACTTTTAA", [24, 417], "TTAAAAGTT", [305, 354]], ["TAATTTTAC", [9, 104], "GTAAAATTA", [139, 413]], ["CTTAAGTTA", [2, 86], "TAACTTAAG", [83, 99]], ["CTTTTAACT", [0, 268], "AGTTAAAAG", [310, 359]], ["CTTAATGTA", [86], "TACATTAAG", [99, 225, 301]], ["TATTTATCT", [42, 199, 208], "AGATAAATA", [90]], ["AGGTTAATA", [90, 358], "TATTAACCT", [323, 420]], ["AACTTAAGT", [84, 100], "ACTTAAGTT", [85, 101]], ["ATTTTTACT", [10, 441], "AGTAAAAAT", [55, 374]], ["TATTTTTAC", [9, 440], "GTAAAAATA", [92, 375]], ["TTTAACTTA", [2, 201, 421], "TAAGTTAAA", [88]], ["GGTAAAAAT", [91, 374, 412], "ATTTTTACC", [418]], ["AAGATAAAT", [89, 95], "ATTTATCTT", [200, 209]], ["TTAACTTAT", [3, 202, 422], "ATAAGTTAA", [98]]]]
@@ -62,68 +62,69 @@
 </body>
 </html>
 <script>
+    $( document ).ready(function() {
 
-    console.log("len="+window.kmers.length);
-    var cnt = 0
-    for(var nkmer=0; nkmer < window.kmers.length; nkmer++) {
-        $("#kmers").append("<h3>num="+window.kmers[nkmer][0]+"</h3>")
-        for(var k=1;k<window.kmers[nkmer].length; k++) {
-            $("#kmers").append("<span class=\"kmer_pair\" id=\"kmer_"+cnt+
-                    "\"><span class=\"sel_seq\">"+window.kmers[nkmer][k][0]+
-                    "</span>/<span class=\"rev_seq\">"+window.kmers[nkmer][k][2]+
-                    "</span></span> ");
-            function resetHighlight() {
-                for( var i=0; i<window.seqlen; i++) {
-                    $("#nuc_"+i).removeClass("sel_seq");
-                    $("#nuc_"+i).removeClass("rev_seq");
-                    $("#nuc_"+i).removeClass("mismatch_seq");
-                    $("#nuc_"+i).removeClass("overlap_seq");
-                }
-            }
-            function resetSelected() {
-                $(".kmer_pair").removeClass("selected_item");
-            }
-            function otherClass(clss) {
-                if( clss == "sel_seq") {
-                    return("rev_seq");
-                } else if( clss == "rev_seq") {
-                    return("sel_seq");
-                }
-            }
-            function highlightKmer(index, clss, kmerStr) {
-                for(var i=0; i<window.kvalue; i++ ) {
-                    var pos=index+i;
-                    if( $("#nuc_"+pos).hasClass(otherClass(clss)) ||
-                            $("#nuc_"+pos).hasClass(clss)) {
-                        $("#nuc_"+pos).addClass("overlap_seq");
-                    }
-                    $("#nuc_"+pos).addClass(clss);
-                    if( $("#nuc_"+pos).text() != kmerStr[i] ) {
-                        $("#nuc_"+pos).addClass("mismatch_seq");
+        console.log("len="+window.kmers.length);
+        var cnt = 0
+        for(var nkmer=0; nkmer < window.kmers.length; nkmer++) {
+            $("#kmers").append("<h3>num="+window.kmers[nkmer][0]+"</h3>")
+            for(var k=1;k<window.kmers[nkmer].length; k++) {
+                $("#kmers").append("<span class=\"kmer_pair\" id=\"kmer_"+cnt+
+                        "\"><span class=\"sel_seq\">"+window.kmers[nkmer][k][0]+
+                        "</span>/<span class=\"rev_seq\">"+window.kmers[nkmer][k][2]+
+                        "</span></span> ");
+                function resetHighlight() {
+                    for( var i=0; i<window.seqlen; i++) {
+                        $("#nuc_"+i).removeClass("sel_seq");
+                        $("#nuc_"+i).removeClass("rev_seq");
+                        $("#nuc_"+i).removeClass("mismatch_seq");
+                        $("#nuc_"+i).removeClass("overlap_seq");
                     }
                 }
-            }
-            function bindHighlightFun(n, k, cnt) {
-                $("#kmer_"+cnt).click(function() {
-                    resetSelected();
-                    $("#kmer_"+cnt).toggleClass("selected_item");
-                    resetHighlight();
-                    for( var j=0; j<window.kmers[n][k][1].length; j++) {
-                        var index = window.kmers[n][k][1][j];
-                        highlightKmer(index, "sel_seq", window.kmers[n][k][0])
+                function resetSelected() {
+                    $(".kmer_pair").removeClass("selected_item");
+                }
+                function otherClass(clss) {
+                    if( clss == "sel_seq") {
+                        return("rev_seq");
+                    } else if( clss == "rev_seq") {
+                        return("sel_seq");
                     }
-                    for( var j=0; j<window.kmers[n][k][3].length; j++) {
-                        var index = window.kmers[n][k][3][j];
-                        highlightKmer(index, "rev_seq", window.kmers[n][k][2]);
+                }
+                function highlightKmer(index, clss, kmerStr) {
+                    for(var i=0; i<window.kvalue; i++ ) {
+                        var pos=index+i;
+                        if( $("#nuc_"+pos).hasClass(otherClass(clss)) ||
+                                $("#nuc_"+pos).hasClass(clss)) {
+                            $("#nuc_"+pos).addClass("overlap_seq");
+                        }
+                        $("#nuc_"+pos).addClass(clss);
+                        if( $("#nuc_"+pos).text() != kmerStr[i] ) {
+                            $("#nuc_"+pos).addClass("mismatch_seq");
+                        }
                     }
-                });
+                }
+                function bindHighlightFun(n, k, cnt) {
+                    $("#kmer_"+cnt).click(function() {
+                        resetSelected();
+                        $("#kmer_"+cnt).toggleClass("selected_item");
+                        resetHighlight();
+                        for( var j=0; j<window.kmers[n][k][1].length; j++) {
+                            var index = window.kmers[n][k][1][j];
+                            highlightKmer(index, "sel_seq", window.kmers[n][k][0])
+                        }
+                        for( var j=0; j<window.kmers[n][k][3].length; j++) {
+                            var index = window.kmers[n][k][3][j];
+                            highlightKmer(index, "rev_seq", window.kmers[n][k][2]);
+                        }
+                    });
+                }
+                bindHighlightFun(nkmer, k, cnt);
+                cnt += 1;
             }
-            bindHighlightFun(nkmer, k, cnt);
-            cnt += 1;
+
         }
 
-    }
-
-//        });
+    });
 //    }
 </script>
